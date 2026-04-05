@@ -1,0 +1,293 @@
+<!-- 等一下，下一次跟他说按正式写代码一样，一步一步加东西，体现思考，这样才是真正的学习 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册-表单练习</title>
+    <style>
+        /* ========== 全局样式 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        .register-card {
+            background: white;
+            width: 450px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102,126,234,0.3);
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .radio-group input {
+            width: auto;
+            margin-right: 5px;
+        }
+        .terms {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .terms input {
+            width: auto;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        /* 错误提示默认隐藏 */
+        .error {
+            color: #ff6b6b;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        /* 密码强度条样式 */
+        .strength-bar {
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .strength {
+            height: 100%;
+            width: 0;
+            transition: width 0.2s;
+        }
+        .strength.weak {
+            width: 33%;
+            background: #ff6b6b;
+        }
+        .strength.medium {
+            width: 66%;
+            background: #ffd93d;
+        }
+        .strength.strong {
+            width: 100%;
+            background: #51cf66;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <h2>用户注册</h2>
+        <form id="registerForm" onsubmit="return false">
+            <!-- 用户名输入框 -->
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" id="username" placeholder="请输入用户名" required>
+                <div class="error" id="usernameError">用户名不能为空</div>
+            </div>
+            <!-- 邮箱输入框 -->
+             <div class="form-group">
+                <label>邮箱</label>
+                <input type="email" id="email" placeholder="请输入邮箱" required>
+                <div class="error" id="emailError">邮箱格式不正确</div>
+             </div>
+             <!-- 密码输入框 -->
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="password" placeholder="请输入密码" required>
+                <div class="strength-bar">
+                    <div class="strength" id="strength"></div>
+                </div>
+                <div class="error" id="passwordError">密码至少8位，包含大小写字母和数字</div>
+            </div>
+            <!-- 确认密码输入框 -->
+             <div class="form-group">
+                <label>确认密码</label>
+                <input type="password" id="confirm" placeholder="请再次输入密码" required>
+                <div class="error" id="confirmError">两次密码不一致</div>
+            </div>
+            <!-- 性别单选按钮 -->
+            <div class="form-group">
+                <label>性别</label>
+                <div class="radio-group">
+                    <input type="radio" name="gender" id="male" value="男" checked>
+                    <label for="male">男</label>
+                    <input type="radio" name="gender" id="female" value="女">
+                    <label for="female">女</label>
+                </div>
+            </div>
+            <!-- 城市下拉选择 -->
+             <div class="form-group">
+                <label>城市</label>
+                <select id="city">
+                    <option value="">请选择城市</option>
+                    <option value="北京">北京</option>
+                    <option value="上海">上海</option>
+                    <option value="广州">广州</option>
+                    <option value="深圳">深圳</option>
+                    <option value="重庆">重庆</option>
+                </select>
+                <div class="error" id="cityError">请选择城市</div>
+             </div>
+            <!-- 同意协议复选框 -->
+            <div class="form-group terms">
+                <input type="checkbox" id="agree" checked>
+                <label for="agree">我已阅读并同意《用户协议》</label>
+                <div class="error" id="agreeError">请勾选协议</div>
+            </div>
+            <!-- 注册按钮 -->
+             <button type="button" class="register-btn" id="registerBtn">注 册</button>
+        </form>
+    </div>
+
+<script>
+    // 获取所有需要的 DOM 元素(JS)
+    const username = document.getElementById('username');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const confirm = document.getElementById('confirm');
+    const city = document.getElementById('city');
+    const agree = document.getElementById('agree');
+    const registerBtn = document.getElementById('registerBtn');
+    const usernameError = document.getElementById('usernameError');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmError = document.getElementById('confirmError');
+    const strengthDiv = document.getElementById('strength');
+    const cityError = document.getElementById('cityError');
+    const agreeError = document.getElementById('agreeError');
+    // 密码强度检测（实时）
+    document.getElementById('password').addEventListener('input',function(){
+        let pwd = this.value;
+        // 强度规则：用正则表达式判断
+        let hasLower = /[a-z]/.test(pwd);
+        let hasUpper = /[A-Z]/.test(pwd);
+        let hasNumber = /[0-9]/.test(pwd);
+        let lengthOk = pwd.length >= 8;
+        // 根据密码强度设置不同的样式类
+        if(pwd.length == 0){
+            strengthDiv.className = 'strength';
+        } else if (lengthOk && hasLower && hasUpper && hasNumber) {
+            strengthDiv.className = 'strength strong';
+        } else if (pwd.length >= 6) {
+            strengthDiv.className = 'strength medium';
+        } else {
+            strengthDiv.className = 'strength weak';
+        }
+    });
+    // 表单验证函数（点击注册时调用）
+    function ValidateForm(){
+        let isValid = true;
+        // 1. 用户名：不能为空（去掉前后空格后判断）
+        if(username.value.trim() === ''){
+            document.getElementById('usernameError').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById('usernameError').style.display = 'none';
+        }
+        // 2. 邮箱：使用正则检验基本格式
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(!emailRegex.test(email.value)){
+            emailError.style.display = 'block';
+            isValid = false;
+        } else {
+            emailError.style.display = 'none';
+        }
+        // ---------- 3. 验证密码强度 ----------
+        const pwd = password.value;
+        const hasLower = /[a-z]/.test(pwd);
+        const hasUpper = /[A-Z]/.test(pwd);
+        const hasNumber = /[0-9]/.test(pwd);
+        const lengthOk = pwd.length >= 8;
+        if(!lengthOk || !hasLower || !hasUpper || !hasNumber){
+            passwordError.style.display = 'block';
+            isValid = false;
+        } else {
+            passwordError.style.display = 'none';
+        }
+        // ---------- 4. 验证确认密码（必须和密码一致）----------
+        if (password.value !== confirm.value) {
+                confirmError.style.display = 'block';
+                isValid = false;
+        } else {
+                confirmError.style.display = 'none';
+        }
+        // ---------- 5. 验证城市（必须选择一项）----------
+        if (city.value === '') {
+            cityError.style.display = 'block';
+            isValid = false;
+        } else {
+            cityError.style.display = 'none';
+        }
+        // ---------- 6. 验证复选框（必须勾选）----------
+        if (!agree.checked) {
+            agreeError.style.display = 'block';
+            isValid = false;
+        } else {
+            agreeError.style.display = 'none';
+        }
+        if (isValid) {
+            alert(`注册成功！\n用户名：${username.value}\n邮箱：${email.value}`);
+        }
+        // 这里可以提交表单数据到后端服务器
+    }
+    registerBtn.addEventListener('click', ValidateForm);
+</script>
+</body>
+</html>
+<!-- 步骤:
+        先搭建 HTML 骨架（确保标签闭合、属性正确）。
+
+        添加 CSS（让页面好看，便于调试）。
+
+        在 <script> 中先获取所有需要的 DOM 元素。
+
+        实现密码强度实时检测（单独监听 input 事件）。
+
+        实现验证函数，按顺序检查每个字段，控制错误信息的显示/隐藏。
+
+        绑定注册按钮点击事件，调用验证函数。
+
+        测试：先测试单个字段，再测试组合。 -->

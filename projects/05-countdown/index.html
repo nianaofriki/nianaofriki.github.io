@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>限时抢购 · 倒计时</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
+            width: 600px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 80px;
+        }
+
+        .product-info {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .product-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 36px;
+            color: #ff6b6b;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .original-price {
+            font-size: 18px;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 15px;
+        }
+
+        /* 倒计时样式 */
+        .countdown {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .countdown-title {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .countdown-box {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .time-unit {
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .time-number {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .time-label {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #ccc;
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.3s;
+        }
+
+        .buy-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .buy-btn.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .buy-btn.disabled:hover {
+            transform: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="product-img">
+            🎧
+        </div>
+        <div class="product-info">
+            <h2 class="product-title">限量版无线降噪耳机</h2>
+            <div class="product-price">
+                ¥299
+                <span class="original-price">¥599</span>
+            </div>
+
+            <div class="countdown">
+                <div class="countdown-title">⏰ 距离活动结束还剩</div>
+                <div class="countdown-box">
+                    <div class="time-unit">
+                        <div class="time-number" id="days">00</div>
+                        <div class="time-label">天</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="time-number" id="hours">00</div>
+                        <div class="time-label">时</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="time-number" id="minutes">00</div>
+                        <div class="time-label">分</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="time-number" id="seconds">00</div>
+                        <div class="time-label">秒</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="buy-btn" id="buyBtn">立即抢购</button>
+        </div>
+    </div>
+    <script>
+        // 设置活动结束时间（这里设置为当前时间 + 2天）
+        // 实际使用时可以修改为目标日期
+        let endTime = new Date();//创建一个日期对象，默认是当前时间,getDate()	获取当前是几号
+        endTime.setDate(endTime.getDate() + 2);      // 2天后结束
+        endTime.setHours(23, 59, 59, 999);            // 结束时间：23:59:59
+
+        // 获取倒计时元素
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        const buyBtn = document.getElementById('buyBtn');
+
+        // 倒计时函数
+        function updateCountdown() {
+            const now = new Date().getTime();      // 当前时间（毫秒）,.getTime()	时间转毫秒
+            const distance = endTime - now;         // 剩余时间（毫秒）
+
+            // 倒计时结束
+            if (distance <= 0) {
+                daysEl.textContent = '00';
+                hoursEl.textContent = '00';
+                minutesEl.textContent = '00';
+                secondsEl.textContent = '00';
+                
+                // 按钮变灰，不可点击
+                buyBtn.textContent = '活动已结束';
+                buyBtn.disabled = true;//禁用按钮（不可点击）
+                buyBtn.classList.add('disabled');//添加灰色样式类
+                return;
+            }
+
+            // 计算天、时、分、秒
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));//Math.floor()	向下取整
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // 更新显示（补零：小于10时前面加0）
+            daysEl.textContent = days < 10 ? '0' + days : days;
+            hoursEl.textContent = hours < 10 ? '0' + hours : hours;
+            minutesEl.textContent = minutes < 10 ? '0' + minutes : minutes;
+            secondsEl.textContent = seconds < 10 ? '0' + seconds : seconds;
+        }
+
+        // 立即执行一次，避免空白
+        updateCountdown();
+        // 每秒更新一次
+        setInterval(updateCountdown, 1000);//setInterval()	定时执行
+
+        // 购买按钮点击事件
+        buyBtn.addEventListener('click', function() {
+            if (!buyBtn.disabled) {
+                alert('恭喜！抢购成功！');
+            }
+        });
+    </script>
+</body>
+</html>

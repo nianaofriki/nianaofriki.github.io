@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>响应式导航菜单</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+        }
+
+        /* 导航栏容器 */
+        .navbar {
+            background: #333;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Logo */
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        /* 汉堡菜单按钮（默认隐藏） */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        /* 导航菜单 */
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            transition: 0.3s;
+        }
+
+        .nav-menu li a:hover {
+            background: #555;
+            border-radius: 5px;
+        }
+
+        /* 内容区域 */
+        .content {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+        }
+        /* 响应式设计 */
+                @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;      /* 显示汉堡菜单按钮 */
+            }
+
+            .nav-menu {
+                display: none;       /* 默认隐藏菜单 */
+                width: 100%;
+                flex-direction: column;
+                gap: 0;
+                margin-top: 15px;
+            }
+
+            .nav-menu.active {
+                display: flex;       /* 点击后显示 */
+            }
+
+            .nav-menu li {
+                text-align: center;
+                border-top: 1px solid #555;
+            }
+
+            .nav-menu li a {
+                display: block;
+                padding: 12px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">MySite</a>
+        
+        <!-- 汉堡菜单按钮 -->
+        <button class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- 导航链接 -->
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="#">首页</a></li>
+            <li><a href="#">关于</a></li>
+            <li><a href="#">服务</a></li>
+            <li><a href="#">项目</a></li>
+            <li><a href="#">联系</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <h1>响应式导航菜单示例</h1>
+        <p>调整浏览器窗口大小，观察导航栏的变化。</p>
+        <p>当屏幕宽度小于 768px 时，导航菜单会隐藏，并显示一个汉堡菜单按钮。点击按钮可以展开/收起菜单。</p>
+        <p>这是前端开发中非常常见的响应式设计模式，用于手机端适配。</p>
+    </div>
+
+    <script>
+        // 获取元素
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        // 点击汉堡菜单按钮，切换导航菜单的显示/隐藏
+        menuToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

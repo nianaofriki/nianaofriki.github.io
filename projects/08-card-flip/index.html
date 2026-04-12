@@ -1,12 +1,191 @@
-<!DOCTYPE html> 
-<html> 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>���ƶ���</title> 
-</head> 
-<body> 
-    <h1>���ƶ���</h1> 
-    <p>���ڽ�����...</p> 
-</body> 
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D翻牌动画</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 卡片容器 */
+        .card-container {
+            width: 300px;
+            height: 400px;
+            perspective: 1000px;  /* 透视效果，让3D更明显 */
+        }
+
+        /* 卡片主体 */
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;  /* 保留3D效果 */
+            cursor: pointer;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* 翻转状态 */
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* 正面和反面的共同样式 */
+        .card-front, .card-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;  /* 背面隐藏 */
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* 正面样式 */
+        .card-front {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+        }
+
+        .card-front h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .card-front p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* 反面样式 */
+        .card-back {
+            background: white;
+            color: #333;
+            transform: rotateY(180deg);  /* 反面先旋转180度，配合父容器翻转 */
+        }
+
+        .card-back h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .card-back ul {
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .card-back li {
+            margin: 8px 0;
+            color: #666;
+        }
+
+        /* 提示 */
+        .hint {
+            margin-top: 30px;
+            color: white;
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* 按钮组 */
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="card-container">
+            <div class="card" id="flipCard">
+                <!-- 正面 -->
+                <div class="card-front">
+                    <h2>✨ 技术卡片</h2>
+                    <p>点击查看我的技能</p>
+                    <p style="margin-top: 20px; font-size: 40px;">👆</p>
+                </div>
+                <!-- 反面 -->
+                <div class="card-back">
+                    <h3>🛠️ 技能清单</h3>
+                    <ul>
+                        <li>C语言</li>
+                        <li>数据结构</li>
+                        <li>HTML/CSS</li>
+                        <li>JavaScript</li>
+                        <li>Git/GitHub</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="hint">
+            <p>💡 点击卡片翻转</p>
+            <div class="buttons">
+                <button id="flipBtn">翻转</button>
+                <button id="resetBtn">重置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取元素
+        const card = document.getElementById('flipCard');
+        const flipBtn = document.getElementById('flipBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // 翻转函数
+        function flipCard() {
+            card.classList.add('flipped');
+        }
+
+        // 重置函数（翻回正面）
+        function resetCard() {
+            card.classList.remove('flipped');
+        }
+
+        // 切换函数（翻转/翻回）
+        function toggleCard() {
+            card.classList.toggle('flipped');
+        }
+
+        // 绑定事件
+        card.addEventListener('click', toggleCard);   // 点击卡片翻转/翻回
+        flipBtn.addEventListener('click', flipCard);   // 按钮：翻到反面
+        resetBtn.addEventListener('click', resetCard); // 按钮：翻回正面
+    </script>
+</body>
 </html>
